@@ -1,0 +1,71 @@
+@model eCommerce.Models.Table.Cliente
+
+@{
+    ViewData["Title"] = "Editando Cliente";
+}
+
+<h1>Editando Cliente</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="IdPessoa" />
+
+            @(Model.IdPessoaNavigation.PessoaFisica != null ?
+            await Html.PartialAsync("ClientePessoaFisica") :
+            await Html.PartialAsync("ClientePessoaJuridica"))
+
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsPreferencial" />
+                    <label class="control-label" asp-for="IsPreferencial">Cliente preferencial</label>
+                </label>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Salvar" onclick="return formatarCpf();" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Voltar</a>
+</div>
+
+@section Scripts {
+@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var cpf = $('#IdPessoaNavigation_CpfCnpj').val();
+        var cnpj = $('#IdPessoaNavigation_CpfCnpj').val();
+        if (cpf.length < 11) {
+            var zerosCpf = '0'.repeat(11 - cpf.length);
+            cpf = zerosCpf + cpf;
+        }
+        
+        if(cnpj.length < 14){
+            var zerpsCnpj = '0'.repeat(14 - cnpj.length);
+            cnpj = zerpsCnpj + cnpj;
+        }
+        
+        $('#Cpf').val(cpf);
+        $('#Cpf').mask('000.000.000-00', { reverse: true });
+
+        $('#Cnpj').val(cnpj);
+        $('#Cnpj').mask('00.000.000/0000-00', { reverse: true });
+    });
+
+    function formatarCpfCnpj() {
+        var cpfNumero = $('#Cpf').unmask().val();
+        var cnpjNumero = $('#Cnpj').unmask().val();
+         $('#IdPessoaNavigation_CpfCnpj').val(cnpjNumero);
+        $('#IdPessoaNavigation_CpfCnpj').val(cpfNumero);
+        return true;
+    }
+
+</script>
+
+
+}
