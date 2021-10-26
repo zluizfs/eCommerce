@@ -1,15 +1,13 @@
 @model eCommerce.Models.Table.Cliente
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Excluindo Cliente";
 }
 
-<h1>Delete</h1>
+<h1>Excluindo Cliente</h1>
 
-<h3>Are you sure you want to delete this?</h3>
+<h3>Você tem certeza que deseja deletar esse item?</h3>
 <div>
-    <h4>Cliente</h4>
-    <hr />
     <dl class="row">
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.IsPreferencial)
@@ -28,6 +26,6 @@
     <form asp-action="Delete">
         <input type="hidden" asp-for="IdPessoa" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <a asp-action="Index">Voltar</a>
     </form>
 </div>

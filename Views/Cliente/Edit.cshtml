@@ -23,7 +23,7 @@
                 </label>
             </div>
             <div class="form-group">
-                <input type="submit" value="Salvar" onclick="return removerMascaraCpfCnpj();" class="btn btn-primary" />
+                <input type="submit" value="Salvar"  class="btn btn-primary" />
             </div>
         </form>
     </div>
@@ -36,31 +36,7 @@
 @section Scripts {
 @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
-<script type="text/javascript">
-    $(document).ready(function () {
-        var cpf = $('#IdPessoaNavigation_CpfCnpj').val();
-        var cnpj = $('#IdPessoaNavigation_CpfCnpj').val();
-        if (cpf.length < 11) {
-            var zerosCpf = '0'.repeat(11 - cpf.length);
-            cpf = zerosCpf + cpf;
-        }
 
-        if (cnpj.length < 14) {
-            var zerpsCnpj = '0'.repeat(14 - cnpj.length);
-            cnpj = zerpsCnpj + cnpj;
-        }
-
-        $('#Cpf').val(cpf);
-        $('#Cpf').mask('000.000.000-00', { reverse: true });
-
-        $('#Cnpj').val(cnpj);
-        $('#Cnpj').mask('00.000.000/0000-00', { reverse: true });
-    });
-
-    function removerMascaraCpfCnpj() {
-       $('#IdPessoaNavigation_CpfCnpj').unmask();
-        return true;
-    }
 
 </script>
 
