@@ -1,13 +1,14 @@
 ﻿using System;
+using eCommerce.Models.Autenticacao;
 using eCommerce.Models.Table;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 
 #nullable disable
 
 namespace eCommerce.Models.DataContext
 {
-    public partial class eCommerceContext : DbContext
+    public partial class eCommerceContext : IdentityDbContext<Usuario, Role, string>
     {
         public eCommerceContext()
         {
@@ -47,7 +48,10 @@ namespace eCommerce.Models.DataContext
         //         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
+        {   
+
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.HasAnnotation("Relational:Collation", "Latin1_General_100_CI_AI");
 
             modelBuilder.Entity<Cidade>(entity =>

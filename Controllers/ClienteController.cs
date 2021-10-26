@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using eCommerce.Models.DataContext;
 using eCommerce.Models.Table;
+using Microsoft.AspNetCore.Authorization;
 
 namespace eCommerce.Controllers
 {
+    [Authorize]
     public class ClienteController : Controller
     {
         private readonly eCommerceContext _context;
