@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@inject Microsoft.AspNetCore.Identity.SignInManager<eCommerce.Models.Autenticacao.Usuario> SignInManager
+@inject Microsoft.AspNetCore.Identity.UserManager<eCommerce.Models.Autenticacao.Usuario> UserManager
+
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -21,10 +24,25 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Cliente" asp-action="Index">Clientes</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Cliente"
+                                asp-action="Index">Clientes</a>
                         </li>
                     </ul>
+                    <div class="col-6" style="display: flex; justify-content: end">
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <div>Olá @UserManager.GetUserName(User)! Bem-vindo(a) / @Html.ActionLink("Logout", "Sair",
+                            "Autenticacao")</div>
+                        }
+                        else
+                        {
+                            <a class="nav-item nav-link" asp-controller="Autenticacao" asp-action="Acessar">
+                                Informar usuário/senha para acessar
+                            </a>
+                        }
+                    </div>
                 </div>
+
             </div>
         </nav>
     </header>
