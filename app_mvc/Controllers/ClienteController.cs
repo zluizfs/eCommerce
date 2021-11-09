@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using eCommerce.Models.DataContext;
 using eCommerce.Models.Table;
 using Microsoft.AspNetCore.Authorization;
+using eCommerceDAL;
 
 namespace eCommerce.Controllers
 {
@@ -15,18 +16,18 @@ namespace eCommerce.Controllers
     public class ClienteController : Controller
     {
         private readonly eCommerceContext _context;
-
+        private readonly ClienteDAL clienteDAL;
         public ClienteController(eCommerceContext context)
         {
             _context = context;
+            clienteDAL = new ClienteDAL(context);
         }
 
         // GET: Cliente
         public async Task<IActionResult> Index()
         {
-            var clientes = await _context.Clientes.Include("IdPessoaNavigation.PessoaFisica")
-                .Include("IdPessoaNavigation.PessoaJuridica")
-                .ToListAsync();
+            var clientes = await clienteDAL.Listar();
+
             return View(clientes);
         }
 
@@ -38,9 +39,8 @@ namespace eCommerce.Controllers
                 return NotFound();
             }
 
-            var cliente = await _context.Clientes
-                .Include(c => c.IdPessoaNavigation)
-                .FirstOrDefaultAsync(m => m.IdPessoa == id);
+            var cliente = await clienteDAL.ObterPessoaVinculada((int) id);
+
             if (cliente == null)
             {
                 return NotFound();
@@ -63,10 +63,10 @@ namespace eCommerce.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdPessoa, IsPreferencial")] Cliente cliente)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && cliente.IdPessoa == 0)
             {
-                _context.Add(cliente);
-                await _context.SaveChangesAsync();
+                var inserir = await clienteDAL.Inserir(cliente);
+
                 return RedirectToAction(nameof(Index));
             }
             ViewData["IdPessoa"] = new SelectList(_context.Pessoas, "IdPessoa", "Nome", cliente.IdPessoa);
@@ -81,9 +81,8 @@ namespace eCommerce.Controllers
                 return NotFound();
             }
 
-            var cliente = await _context.Clientes.Include(c => c.IdPessoaNavigation.PessoaFisica)
-                .Include(c => c.IdPessoaNavigation.PessoaJuridica)
-                .SingleAsync(c => c.IdPessoa == id);
+            var cliente = await clienteDAL.ObterPessoaFisicaOuJuridicaVinculada((int) id);
+
             if (cliente == null)
             {
                 return NotFound();
@@ -106,25 +105,18 @@ namespace eCommerce.Controllers
 
             if (ModelState.IsValid)
             {
-                try
+                var resultAtualizar = await clienteDAL.Atualizar(cliente);
+                
+                if(!resultAtualizar)
                 {
-                    _context.Update(cliente);
-                    await _context.SaveChangesAsync();
+                    return NotFound();
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ClienteExists(cliente.IdPessoa))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdPessoa"] = new SelectList(_context.Pessoas, "IdPessoa", "Nome", cliente.IdPessoa);
+
+            // ViewData["IdPessoa"] = new SelectList(_context.Pessoas, "IdPessoa", "Nome", cliente.IdPessoa);
+
             return View(cliente);
         }
 
@@ -136,9 +128,8 @@ namespace eCommerce.Controllers
                 return NotFound();
             }
 
-            var cliente = await _context.Clientes
-                .Include(c => c.IdPessoaNavigation)
-                .FirstOrDefaultAsync(m => m.IdPessoa == id);
+            var cliente = await clienteDAL.ObterPessoaVinculada((int) id);
+
             if (cliente == null)
             {
                 return NotFound();
@@ -152,15 +143,9 @@ namespace eCommerce.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var cliente = await _context.Clientes.FindAsync(id);
-            _context.Clientes.Remove(cliente);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+            var cliente = await clienteDAL.ExcluirPorId(id);
 
-        private bool ClienteExists(int id)
-        {
-            return _context.Clientes.Any(e => e.IdPessoa == id);
+            return RedirectToAction(nameof(Index));
         }
     }
 }
