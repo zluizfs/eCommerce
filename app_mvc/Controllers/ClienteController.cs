@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -24,9 +21,12 @@ namespace eCommerce.Controllers
         }
 
         // GET: Cliente
-        public async Task<IActionResult> Index()
-        {
-            var clientes = await clienteDAL.Listar();
+        public async Task<IActionResult> Index(int? pagina, int? qtdItensPorPagina, string search)
+        {   
+            int numeroPagina = pagina ?? 1;
+            int qtdeRegistros = qtdItensPorPagina ?? 10;
+
+            var clientes = await clienteDAL.ListarPaginado(search, numeroPagina, qtdeRegistros);
 
             return View(clientes);
         }

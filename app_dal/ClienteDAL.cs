@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using eCommerce.Models.Table;
+using X.PagedList;
 
 namespace eCommerceDAL
 {
@@ -52,6 +53,16 @@ namespace eCommerceDAL
       }
 
       return true;
+    }
+
+    public async Task<IPagedList<Cliente>> ListarPaginado(string search, int numeroPagina, int qtdeRegistros)
+    {
+      var clientes = await _context.Clientes.Include("IdPessoaNavigation.PessoaFisica")
+        .Include("IdPessoaNavigation.PessoaJuridica")
+        .Where(x => x.IdPessoaNavigation.Nome.Contains(search) || string.IsNullOrEmpty(search))
+        .ToPagedListAsync(numeroPagina, qtdeRegistros);
+
+        return clientes;
     }
 
     public async Task<bool> Excluir(Cliente cliente)

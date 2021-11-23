@@ -1,7 +1,7 @@
-@model IEnumerable<eCommerce.Models.Table.Cliente>
-
+@model X.PagedList.IPagedList<eCommerce.Models.Table.Cliente>
+@using X.PagedList.Mvc.Core;
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Home";
 }
 
 <h1>Clientes Cadastrados</h1>
@@ -16,7 +16,7 @@
                 Preferencial
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IdPessoaNavigation.Nome)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().IdPessoaNavigation.Nome)
             </th>
             <th>
                 Tipo de Pessoa
@@ -61,3 +61,6 @@
         }
     </tbody>
 </table>
+<div class="row">
+    @Html.PagedListPager(Model, pagina => Url.Action("Index", new {pagina}))
+</div>
