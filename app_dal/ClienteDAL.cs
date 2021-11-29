@@ -26,11 +26,17 @@ namespace eCommerceDAL
       return clientes;
     }
 
-    public async Task<bool> Inserir(Cliente cliente)
+    public async Task<Cliente> Inserir(Cliente cliente)
     {
+      // CHAMAR: VAR PESSOA NEW PESSOADAL(_CONTEXT).OBTERPESSOA(CLIENTE.IdPessoaNavigation.CpfCnpj);
+      // IF(PESSOA != NULL){
+      //    cliente.IdPessoa = pessoa.IdPessoa;
+      //    cliente.IdPessoaNavigation = null;
+      // }
+
       _context.Add(cliente);
       await _context.SaveChangesAsync();
-      return true;
+      return cliente;
     }
 
     public async Task<bool> Atualizar(Cliente cliente)
@@ -62,7 +68,7 @@ namespace eCommerceDAL
         .Where(x => x.IdPessoaNavigation.Nome.Contains(search) || string.IsNullOrEmpty(search))
         .ToPagedListAsync(numeroPagina, qtdeRegistros);
 
-        return clientes;
+      return clientes;
     }
 
     public async Task<bool> Excluir(Cliente cliente)

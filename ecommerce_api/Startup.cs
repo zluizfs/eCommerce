@@ -2,17 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using eCommerce.Models.DataContext;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using eCommerce.Models.DataContext;
+using Microsoft.EntityFrameworkCore;
 
 namespace ecommerce_api
 {
@@ -30,7 +30,7 @@ namespace ecommerce_api
         {
 
             services.AddControllers();
-            
+
             services.AddDbContext<eCommerceContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("eCommerceContext")));
 
